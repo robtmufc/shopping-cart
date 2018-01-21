@@ -1,11 +1,14 @@
+
+
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const fs = require('fs');
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
 // Set Environment
-process.env.NODE_ENV ='production';
+//process.env.NODE_ENV ='production';
 
 let mainWindow;
 let addWindow;
@@ -32,7 +35,6 @@ app.on('ready', function(){
 });
 
 // Handle create add window
-
 function createAddWindow(){
 // create new window
 addWindow = new BrowserWindow({
@@ -54,10 +56,36 @@ addWindow.loadURL(url.format({
 
 // Catch item add
 ipcMain.on('item:add', function(e, item){
-    mainWindow.webContents.send('item:add', item);
+    mainWindow.webContents.send('item:add', item); // send to mainWindow.html to deal with
     addWindow.close();
 });
 
+// Save File
+
+
+
+function saveToFile(){
+    mainWindow.webContents.send('item:save');
+
+    ipcMain.on('item:save', function(e, item){
+        let lyrics = item;
+        console.log(lyrics)
+
+// write to a new file
+fs.writeFile('saves/shopping_list.txt', lyrics, (err) => {  
+    // throws an error, you could also catch it here
+    if (err) throw err;
+
+    // success case, the file was saved
+    console.log('Lyric saved!');
+    dialog.showMessageBox({
+        type: "info",
+        title: "File Saved!",
+        message: "Successfully saved to file!"
+    });
+});
+    });
+}
 // create menu template
 const mainMenuTemplate = [
     {
@@ -75,6 +103,18 @@ const mainMenuTemplate = [
                     mainWindow.webContents.send('item:clear');
                 }
             },
+            {
+                label: 'Save File',
+                click(){
+                    saveToFile();
+                }
+            },
+            /*{
+                label: 'Load File',
+                click(){
+                    loadFromFile();
+                }
+            },*/
             {
                 label:'Quit',
                 accelerator: process.platform == 'darwin' ? 'Command+Q':'Ctrl+Q',

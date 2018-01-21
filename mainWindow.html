@@ -17,6 +17,7 @@
         const electron = require('electron');
         const {ipcRenderer} = electron;
         const ul = document.querySelector('ul');
+        
 
         // catch add item
         ipcRenderer.on('item:add', function(e, item){
@@ -33,6 +34,28 @@
             ul.innerHTML = '';
             ul.className = '';
         });
+        // save items to static file
+        ipcRenderer.on('item:save', function(e, item){
+            let output = '';
+        var items = ul.getElementsByTagName("li");
+        for (var i = 0; i < items.length; ++i) {
+        // do something with items[i], which is a <li> element
+            output += items[i].textContent +"\n";
+        }
+        ipcRenderer.send('item:save', output); // send to main.js
+        });
+
+        // load items from static file
+        /*ipcRenderer.on('item:load', function(e, item){
+            let output = '';
+        var items = ul.getElementsByTagName("li");
+        for (var i = 0; i < items.length; ++i) {
+        // do something with items[i], which is a <li> element
+           output += items[i].textContent +"\n";
+            console.log(output);
+        }
+        ipcRenderer.send('item:load', output); // send to main.js
+        });*/
 
         // Remove item
         ul.addEventListener('dblclick', removeItem);

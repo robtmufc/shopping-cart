@@ -14,7 +14,7 @@
         <button class='btn wave-effect waves-light' type="submit">add Item</button>
     </form>
     </div>  
-    
+
     <script>
         const electron = require('electron');
         const {ipcRenderer} = electron;
@@ -25,7 +25,7 @@
         function submitForm(e){
             e.preventDefault();
             const item = document.querySelector('#item').value;
-            ipcRenderer.send('item:add', item);
+            ipcRenderer.send('item:add', item); // send to main.js
         }
     </script>
 </body>
