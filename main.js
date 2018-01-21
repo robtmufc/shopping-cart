@@ -8,7 +8,7 @@ const fs = require('fs');
 const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
 // Set Environment
-//process.env.NODE_ENV ='production';
+process.env.NODE_ENV ='production';
 
 let mainWindow;
 let addWindow;
@@ -70,9 +70,13 @@ function saveToFile(){
     ipcMain.on('item:save', function(e, item){
         let lyrics = item;
         console.log(lyrics)
-
+if(!fs.exists('saves')){
+    fs.mkdir('saves',()=>{
+        console.log("folder created successfully!")
+    })
+}
 // write to a new file
-fs.writeFile('saves/shopping_list.txt', lyrics, (err) => {  
+fs.writeFile('saves/shopping_list.txt', lyrics,'UTF-8', (err) => {  
     // throws an error, you could also catch it here
     if (err) throw err;
 
@@ -93,6 +97,7 @@ const mainMenuTemplate = [
         submenu:[
             {
                 label:'Add Item',
+                accelerator: process.platform == 'darwin' ? 'Command+D':'Ctrl+D',
                 click(){
                     createAddWindow();
                 }
@@ -105,6 +110,7 @@ const mainMenuTemplate = [
             },
             {
                 label: 'Save File',
+                accelerator: process.platform == 'darwin' ? 'Command+S':'Ctrl+S',
                 click(){
                     saveToFile();
                 }

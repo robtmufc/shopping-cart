@@ -40,7 +40,7 @@
         var items = ul.getElementsByTagName("li");
         for (var i = 0; i < items.length; ++i) {
         // do something with items[i], which is a <li> element
-            output += items[i].textContent +"\n";
+            output += items[i].textContent +"\r\n";
         }
         ipcRenderer.send('item:save', output); // send to main.js
         });
