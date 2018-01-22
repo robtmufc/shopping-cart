@@ -8,7 +8,7 @@ const fs = require('fs');
 const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
 // Set Environment
-process.env.NODE_ENV ='production';
+//process.env.NODE_ENV ='production';
 
 let mainWindow;
 let addWindow;
@@ -115,12 +115,12 @@ const mainMenuTemplate = [
                     saveToFile();
                 }
             },
-            /*{
+            {
                 label: 'Load File',
                 click(){
                     loadFromFile();
                 }
-            },*/
+            },
             {
                 label:'Quit',
                 accelerator: process.platform == 'darwin' ? 'Command+Q':'Ctrl+Q',
@@ -131,6 +131,20 @@ const mainMenuTemplate = [
         ]
     }
 ];
+
+function loadFromFile(){
+fs.readFile('saves/shopping_list.txt','utf-8', (err, data) =>{
+    if(err) {
+        console.log("An error occurred!"+err);
+        return;
+    }
+
+    var sendData = data.split("\r\n");
+    console.log(typeof sendData);
+    console.log(sendData);
+    mainWindow.webContents.send('item:load', sendData);
+});
+}
 
 // If mac, add empty object to menu
 if(process.platform == 'darwin'){

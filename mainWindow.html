@@ -38,24 +38,34 @@
         ipcRenderer.on('item:save', function(e, item){
             let output = '';
         var items = ul.getElementsByTagName("li");
+        console.log("items length: "+ items.length);
         for (var i = 0; i < items.length; ++i) {
+            console.log("i: "+ i);
         // do something with items[i], which is a <li> element
-            output += items[i].textContent +"\r\n";
+            if(i != items.length-1){
+                output += items[i].textContent +"\r\n";
+            }else{
+                output += items[i].textContent;
+            }
         }
         ipcRenderer.send('item:save', output); // send to main.js
         });
 
         // load items from static file
-        /*ipcRenderer.on('item:load', function(e, item){
-            let output = '';
-        var items = ul.getElementsByTagName("li");
-        for (var i = 0; i < items.length; ++i) {
-        // do something with items[i], which is a <li> element
-           output += items[i].textContent +"\n";
-            console.log(output);
-        }
-        ipcRenderer.send('item:load', output); // send to main.js
-        });*/
+        ipcRenderer.on('item:load', function(e, items){
+            ul.innerHTML = '';
+            ul.className = '';
+            ul.className = 'collection';
+            for(var i =0; i< items.length;i++){
+            var li = document.createElement('li');
+            li.className = 'collection-item';
+            var itemText = document.createTextNode(items[i]);
+            li.appendChild(itemText);
+            ul.appendChild(li);
+            }
+            
+        
+        });
 
         // Remove item
         ul.addEventListener('dblclick', removeItem);
